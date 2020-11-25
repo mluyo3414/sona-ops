@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudbees
+  namespace: argocd
+spec:
+  destination:
+    namespace: cloudbees
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: cloudbees-core
+    helm:
+      values: |
+        OperationsCenter:
+          Platform: gke
+          HostName: msuarez.dev.io
+        sidecarinjector:
+          Enabled: true  
+    repoURL: https://charts.cloudbees.com/public/cloudbees
+    targetRevision: 3.22.0+7f4108a2fd03
+  syncPolicy:
+    automated:
+      prune: true

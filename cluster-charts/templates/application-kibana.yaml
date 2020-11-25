@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kibana
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: elasticsearch
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: kibana
+    helm:
+      valueFiles:
+      - values.yaml
+    repoURL: https://helm.elastic.co
+    targetRevision: 7.9.3
+  syncPolicy:
+    automated:
+      prune: true

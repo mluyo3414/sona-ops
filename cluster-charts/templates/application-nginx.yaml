@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: nginx
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    chart: nginx-ingress
+    helm:
+      values: |
+        rbac:
+          create: true
+        defaultBackend:
+          enabled: false
+        controller:
+          ingressClass: nginx
+          scope:
+            enabled: true
+            namespace: cloudbees
+          service:
+            externalTrafficPolicy: Local
+    repoURL: https://kubernetes-charts.storage.googleapis.com
+    targetRevision: 1.41.3
+  syncPolicy:
+    automated:
+      prune: true
